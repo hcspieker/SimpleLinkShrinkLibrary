@@ -1,0 +1,71 @@
+﻿@model ShortlinkDetailViewModel
+
+@{
+    ViewBag.Title = "Created a new short link";
+}
+
+<div class="row">
+    <div class="col-md-3"></div>
+    <div class="col-12 col-md-6">
+        <div class="card border-secondary w-100" style="display: inline-block">
+            <div class="card-body">
+                <h4 class="card-title text-center">
+                    @ViewBag.Title
+                </h4>
+                <div class="card-text">
+                    <div class="input-group mb-3">
+                        <div class="form-floating">
+                            <input type="url" class="form-control" asp-for="StatusUrl" disabled>
+                            <label for="InternalUrl">Status page (this site)</label>
+                        </div>
+                        <span class="input-group-text" onclick="copyToClipboard('@Model.StatusUrl')">
+                            <i class="bi bi-clipboard"></i>
+                        </span>
+                    </div>
+                    @if (Model.ExpirationDate != null)
+                    {
+                        <div class="form-floating mb-3">
+                            <input type="url" class="form-control rounded-3" asp-for="ExpirationDate" disabled>
+                            <label for="floatingInput">Valid until</label>
+                        </div>
+                    }
+                    <div class="form-floating mb-3">
+                        <input type="url" class="form-control rounded-3" asp-for="TargetUrl" disabled>
+                        <label for="TargetUrl">Target url</label>
+                    </div>
+                    <div class="input-group mb-3">
+                        <div class="form-floating">
+                            <input type="url" class="form-control" asp-for="ShortlinkUrl" disabled>
+                            <label for="InternalAccessUrl">Shortlink</label>
+                        </div>
+                        <span class="input-group-text" onclick="copyToClipboard('@Model.ShortlinkUrl')">
+                            <i class="bi bi-clipboard"></i>
+                        </span>
+                    </div>
+
+                    <form asp-action="Delete" method="post" onsubmit="return confirm('Are you sure that you want to delete this shortlink?')">
+                        <input type="hidden" asp-for="Id" />
+
+                        <div class="float-start mb-3">
+                            <button class="btn btn-danger btn-sm" type="submit">Delete</button>
+                        </div>
+                    </form>
+                    <div class="float-end mb-3">
+                        <a href="@Model.ShortlinkUrl" class="btn btn-primary btn-sm" target="_blank">Test generated link</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3"></div>
+</div>
+
+@section Scripts {
+    <script type="text/javascript">
+        function copyToClipboard(text){
+            navigator.clipboard.writeText(text);
+
+            toastr.success(text, "Copied link!");
+        }
+    </script>
+}
