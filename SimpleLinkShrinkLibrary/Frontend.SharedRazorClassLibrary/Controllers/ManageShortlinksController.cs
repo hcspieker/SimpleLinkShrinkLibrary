@@ -1,19 +1,20 @@
 ﻿using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
-using SimpleLinkShrinkLibrary.Frontend.SharedRazorClassLibrary.Data;
-using SimpleLinkShrinkLibrary.Frontend.SharedRazorClassLibrary.Exceptions;
-using SimpleLinkShrinkLibrary.Frontend.SharedRazorClassLibrary.Extensions;
+using SimpleLinkShrinkLibrary.Core.Application.Services;
+using SimpleLinkShrinkLibrary.Core.Domain.Exceptions;
 using SimpleLinkShrinkLibrary.Frontend.SharedRazorClassLibrary.Models;
+using SimpleLinkShrinkLibrary.Web.SharedRazorClassLibrary.Extensions;
+using SimpleLinkShrinkLibrary.Web.SharedRazorClassLibrary.Models;
 
-namespace SimpleLinkShrinkLibrary.Frontend.SharedRazorClassLibrary.Controllers
+namespace SimpleLinkShrinkLibrary.Web.SharedRazorClassLibrary.Controllers
 {
     public class ManageShortlinksController : Controller
     {
-        private readonly IRepository _repository;
+        private readonly IShortlinkService _service;
 
-        public ManageShortlinksController(IRepository repository)
+        public ManageShortlinksController(IShortlinkService service)
         {
-            _repository = repository;
+            _service = service;
         }
 
         public ActionResult Index()
@@ -27,13 +28,7 @@ namespace SimpleLinkShrinkLibrary.Frontend.SharedRazorClassLibrary.Controllers
             if (!ModelState.IsValid)
                 return View(nameof(Index), model);
 
-            if (!model.TargetUrl!.StartsWith("http", StringComparison.InvariantCultureIgnoreCase))
-            {
-                ModelState.AddModelError(nameof(model.TargetUrl), "The Link field is not a valid fully-qualified http, or https URL.");
-                return View(nameof(Index), model);
-            }
-
-            var result = await _repository.Create(model.TargetUrl!);
+            var result = await _service.Create(model.TargetUrl!);
 
             return RedirectToAction(nameof(State), new { alias = result.Alias });
         }
@@ -43,7 +38,7 @@ namespace SimpleLinkShrinkLibrary.Frontend.SharedRazorClassLibrary.Controllers
         {
             try
             {
-                var result = await _repository.Get(alias);
+                var result = await _service.GetByAlias(alias);
 
                 var model = new ShortlinkDetailViewModel
                 {
@@ -56,7 +51,7 @@ namespace SimpleLinkShrinkLibrary.Frontend.SharedRazorClassLibrary.Controllers
 
                 return View(model);
             }
-            catch (ShortlinkNotFoundException)
+            catch (RetrieveShortlinkException)
             {
                 return RedirectToAction(nameof(PageNotFound));
             }
@@ -67,11 +62,11 @@ namespace SimpleLinkShrinkLibrary.Frontend.SharedRazorClassLibrary.Controllers
         {
             try
             {
-                await _repository.Delete(id);
+                await _service.Delete(id);
 
                 return View();
             }
-            catch (ShortlinkNotFoundException)
+            catch (EntryNotFoundException)
             {
                 return RedirectToAction(nameof(PageNotFound));
             }

@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-namespace SimpleLinkShrinkLibrary.Frontend.Test.WebExampleAppNet9.Controllers
+namespace SimpleLinkShrinkLibrary.Tests.Frontend.SqliteWebApp.Controllers
 {
     public class HomeController : Controller
     {

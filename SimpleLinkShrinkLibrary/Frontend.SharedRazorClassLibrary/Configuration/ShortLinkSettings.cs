@@ -1,8 +1,8 @@
-﻿namespace SimpleLinkShrinkLibrary.Frontend.SharedRazorClassLibrary.Configuration
+﻿namespace SimpleLinkShrinkLibrary.Web.SharedRazorClassLibrary.Configuration
 {
-    public class ShortLinkSettings
+    public class ShortlinkSettings
     {
-        public int LinkAliasLength { get; set; } = 5;
-        public TimeSpan LinkExpirationSpan { get; set; } = TimeSpan.FromDays(10);
+        public int AliasLength { get; set; } = 5;
+        public TimeSpan ExpirationSpan { get; set; } = TimeSpan.FromDays(10);
     }
 }

@@ -1,9 +1,11 @@
-using SimpleLinkShrinkLibrary.Frontend.SharedRazorClassLibrary.Extensions;
+using SimpleLinkShrinkLibrary.Infrastructure.Persistence.Sqlite;
+using SimpleLinkShrinkLibrary.Web.SharedRazorClassLibrary.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 
-builder.Services.EnableShortlinks(builder.Configuration);
+builder.Services.EnableShortlinks(builder.Configuration)
+    .EnableSqlitePersistence(builder.Configuration);
 
 var app = builder.Build();
 

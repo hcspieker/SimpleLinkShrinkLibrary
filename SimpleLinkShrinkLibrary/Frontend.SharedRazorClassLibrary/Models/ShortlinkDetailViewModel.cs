@@ -1,4 +1,4 @@
-﻿namespace SimpleLinkShrinkLibrary.Frontend.SharedRazorClassLibrary.Models
+﻿namespace SimpleLinkShrinkLibrary.Web.SharedRazorClassLibrary.Models
 {
     public class ShortlinkDetailViewModel
     {

@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AssemblyName>SimpleLinkShrinkLibrary.$(MSBuildProjectName)</AssemblyName>
+    <RootNamespace>SimpleLinkShrinkLibrary.$(MSBuildProjectName.Replace(" ", "_"))</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.8">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Frontend.SharedRazorClassLibrary\Web.SharedRazorClassLibrary.csproj" />
+    <ProjectReference Include="..\Infrastructure.Persistence.Sqlite\Infrastructure.Persistence.Sqlite.csproj" />
+  </ItemGroup>
+
+</Project>

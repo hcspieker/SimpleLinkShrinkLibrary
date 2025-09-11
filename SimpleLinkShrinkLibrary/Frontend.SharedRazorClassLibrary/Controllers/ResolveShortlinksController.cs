@@ -1,17 +1,17 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using SimpleLinkShrinkLibrary.Frontend.SharedRazorClassLibrary.Data;
-using SimpleLinkShrinkLibrary.Frontend.SharedRazorClassLibrary.Exceptions;
+using SimpleLinkShrinkLibrary.Core.Application.Services;
+using SimpleLinkShrinkLibrary.Core.Domain.Exceptions;
 
-namespace SimpleLinkShrinkLibrary.Frontend.SharedRazorClassLibrary.Controllers
+namespace SimpleLinkShrinkLibrary.Web.SharedRazorClassLibrary.Controllers
 {
     [ApiController]
     public class ResolveShortlinksController : ControllerBase
     {
-        private readonly IRepository _repository;
+        private readonly IShortlinkService _service;
 
-        public ResolveShortlinksController(IRepository repository)
+        public ResolveShortlinksController(IShortlinkService service)
         {
-            _repository = repository;
+            _service = service;
         }
 
         [HttpGet("s/{alias}")]
@@ -19,10 +19,10 @@ namespace SimpleLinkShrinkLibrary.Frontend.SharedRazorClassLibrary.Controllers
         {
             try
             {
-                var result = await _repository.Get(alias);
+                var result = await _service.GetByAlias(alias);
                 return Redirect(result.TargetUrl);
             }
-            catch (ShortlinkNotFoundException)
+            catch (EntryNotFoundException)
             {
                 return RedirectToRoute(new
                 {

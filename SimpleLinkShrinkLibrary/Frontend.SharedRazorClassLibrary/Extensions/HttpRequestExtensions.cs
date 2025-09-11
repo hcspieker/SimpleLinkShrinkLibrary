@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 
-namespace SimpleLinkShrinkLibrary.Frontend.SharedRazorClassLibrary.Extensions
+namespace SimpleLinkShrinkLibrary.Web.SharedRazorClassLibrary.Extensions
 {
     public static class HttpRequestExtensions
     {
