@@ -1,0 +1,23 @@
+name: Validate pull requests
+
+on:
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+env:
+  PROJECT_FILE: 'SimpleLinkShrinkLibrary/SimpleLinkShrinkLibrary/SimpleLinkShrinkLibrary.sln'
+  ENABLE_TESTS: 'false'
+
+jobs:
+  build:    
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Build dotnet projects
+      uses: hcspieker/shared-build-actions/.github/actions/dotnet-build@main
+      with:
+        build-filter: ${{ env.PROJECT_FILE }}
+        enable-tests: ${{ env.ENABLE_TESTS }}
