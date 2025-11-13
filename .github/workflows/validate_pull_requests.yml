@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 env:
-  PROJECT_FILE: 'SimpleLinkShrinkLibrary/SimpleLinkShrinkLibrary/SimpleLinkShrinkLibrary.sln'
+  PROJECT_FILE: 'SimpleLinkShrinkLibrary/SimpleLinkShrinkLibrary.sln'
   ENABLE_TESTS: 'false'
 
 jobs:
