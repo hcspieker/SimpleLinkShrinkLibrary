@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using SimpleLinkShrinkLibrary.Core.Application.Services;
 using SimpleLinkShrinkLibrary.Core.Domain.Exceptions;
-using SimpleLinkShrinkLibrary.Frontend.SharedRazorClassLibrary.Models;
+using SimpleLinkShrinkLibrary.Web.SharedRazorClassLibrary.Models;
 using SimpleLinkShrinkLibrary.Web.SharedRazorClassLibrary.Extensions;
 using SimpleLinkShrinkLibrary.Web.SharedRazorClassLibrary.Models;
 

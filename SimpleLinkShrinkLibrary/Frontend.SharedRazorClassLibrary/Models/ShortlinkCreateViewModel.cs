@@ -1,4 +1,4 @@
-﻿using SimpleLinkShrinkLibrary.Frontend.SharedRazorClassLibrary.Attributes.Validation;
+﻿using SimpleLinkShrinkLibrary.Web.SharedRazorClassLibrary.Attributes.Validation;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
