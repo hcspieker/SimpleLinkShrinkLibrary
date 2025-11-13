@@ -4,22 +4,14 @@ using Microsoft.Extensions.Hosting;
 
 namespace SimpleLinkShrinkLibrary.Infrastructure.Persistence.BackgroundServices
 {
-    public class InitializeDbService : BackgroundService
+    public class InitializeDbService(IServiceScopeFactory serviceScopeFactory) : BackgroundService
     {
-        private readonly IServiceScopeFactory _serviceScopeFactory;
-
-        public InitializeDbService(IServiceScopeFactory serviceScopeFactory)
-        {
-            _serviceScopeFactory = serviceScopeFactory;
-        }
-
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            using (var scope = _serviceScopeFactory.CreateScope())
-            {
-                var dbContext = scope.ServiceProvider.GetRequiredService<ShortlinkDbContext>();
-                await dbContext.Database.MigrateAsync();
-            }
+            using var scope = serviceScopeFactory.CreateScope();
+            var dbContext = scope.ServiceProvider.GetRequiredService<ShortlinkDbContext>();
+
+            await dbContext.Database.MigrateAsync(cancellationToken: stoppingToken);
         }
     }
 }

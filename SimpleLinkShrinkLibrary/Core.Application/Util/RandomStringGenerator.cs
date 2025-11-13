@@ -11,12 +11,11 @@
             _random = new Random();
             var similarLookingCharacters = new List<char> { 'l', 'I', 'O', '0' };
 
-            _characterList = Enumerable.Range('a', 26)
+            _characterList = [.. Enumerable.Range('a', 26)
                 .Concat(Enumerable.Range('A', 26))
                 .Concat(Enumerable.Range('0', 10))
                 .Select(x => (char)x)
-                .Where(x => !similarLookingCharacters.Any(y => y == x))
-                .ToArray();
+                .Where(x => !similarLookingCharacters.Any(y => y == x))];
 
             _characterListLength = _characterList.Length;
         }

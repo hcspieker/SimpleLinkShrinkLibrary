@@ -5,21 +5,14 @@ using SimpleLinkShrinkLibrary.Core.Domain.Exceptions;
 namespace SimpleLinkShrinkLibrary.Web.SharedRazorClassLibrary.Controllers
 {
     [ApiController]
-    public class ResolveShortlinksController : ControllerBase
+    public class ResolveShortlinksController(IShortlinkService service) : ControllerBase
     {
-        private readonly IShortlinkService _service;
-
-        public ResolveShortlinksController(IShortlinkService service)
-        {
-            _service = service;
-        }
-
         [HttpGet("s/{alias}")]
         public async Task<ActionResult> Get(string alias)
         {
             try
             {
-                var result = await _service.GetByAlias(alias);
+                var result = await service.GetByAlias(alias);
                 return Redirect(result.TargetUrl);
             }
             catch (EntryNotFoundException)

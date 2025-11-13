@@ -9,18 +9,14 @@ namespace SimpleLinkShrinkLibrary.Infrastructure.Persistence.SqlServer
     {
         public static IServiceCollection EnableSqlServerPersistence(this IServiceCollection services, IConfiguration configuration)
         {
-            var connectionString = configuration.GetConnectionString("ShortlinkDbConnectionString");
-
-            if (connectionString == null)
-                throw new ConnectionStringNotFoundException("Connection string 'ShortlinkDbConnectionString' not found.");
+            var connectionString = configuration.GetConnectionString("ShortlinkDbConnectionString")
+                ?? throw new ConnectionStringNotFoundException("Connection string 'ShortlinkDbConnectionString' not found.");
 
             var migrationsAssembly = typeof(PersistenceSqlServerServiceRegistration).Assembly;
-
 
             services.AddDbContext<ShortlinkDbContext>(o => o.UseSqlServer(connectionString, x => x.MigrationsAssembly(migrationsAssembly)));
 
             services.EnableBasePersistenceServices();
-
 
             return services;
         }

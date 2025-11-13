@@ -1,7 +1,4 @@
-﻿using System.Runtime.Serialization;
-
-
-namespace SimpleLinkShrinkLibrary.Core.Domain.Exceptions
+﻿namespace SimpleLinkShrinkLibrary.Core.Domain.Exceptions
 {
 
     [Serializable]
@@ -10,6 +7,5 @@ namespace SimpleLinkShrinkLibrary.Core.Domain.Exceptions
         public EntryNotFoundException() { }
         public EntryNotFoundException(string message) : base(message) { }
         public EntryNotFoundException(string message, Exception inner) : base(message, inner) { }
-        protected EntryNotFoundException(SerializationInfo info, StreamingContext context) : base(info, context) { }
     }
 }

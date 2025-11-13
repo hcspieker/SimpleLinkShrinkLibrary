@@ -7,31 +7,21 @@ using SimpleLinkShrinkLibrary.Core.Domain.Exceptions;
 
 namespace SimpleLinkShrinkLibrary.Core.Application.Services
 {
-    public class ShortlinkService : IShortlinkService
+    public class ShortlinkService(
+        IShortlinkRepository repository,
+        IRandomStringGenerator randomStringGenerator,
+        IShortlinkDefaultValues defaultValues,
+        ILogger<ShortlinkService> logger) : IShortlinkService
     {
-        private readonly IShortlinkRepository _repository;
-        private readonly IRandomStringGenerator _randomStringGenerator;
-        private readonly IShortlinkDefaultValues _defaultValues;
-        private readonly ILogger<ShortlinkService> _logger;
-
-        public ShortlinkService(IShortlinkRepository repository, IRandomStringGenerator randomStringGenerator,
-            IShortlinkDefaultValues shortlinkDefaultValues, ILogger<ShortlinkService> logger)
-        {
-            _repository = repository;
-            _randomStringGenerator = randomStringGenerator;
-            _defaultValues = shortlinkDefaultValues;
-            _logger = logger;
-        }
-
         public async Task<Shortlink> GetByAlias(string alias)
         {
             try
             {
-                return await _repository.GetAsync(x => x.Alias == alias);
+                return await repository.GetAsync(x => x.Alias == alias);
             }
             catch (Exception e)
             {
-                _logger.LogError(e, "Error while searching a shortlink for the alias {alias}", alias);
+                logger.LogError(e, "Error while searching a shortlink for the alias {alias}", alias);
 
                 throw new RetrieveShortlinkException($"Error while searching a shortlink for the alias {alias}");
             }
@@ -40,25 +30,25 @@ namespace SimpleLinkShrinkLibrary.Core.Application.Services
         public async Task<Shortlink> Create(string targetUrl)
         {
             var alias = await GenerateUniqueAlias();
-            var expirationDate = DateTime.Now.Add(_defaultValues.ExpirationSpan);
+            var expirationDate = DateTime.Now.Add(defaultValues.ExpirationSpan);
 
             var entity = new Shortlink { TargetUrl = targetUrl, Alias = alias, ExpirationDate = expirationDate };
 
-            await _repository.CreateAsync(entity);
+            await repository.CreateAsync(entity);
 
             return entity;
         }
 
         private async Task<string> GenerateUniqueAlias()
         {
-            var currentlyUsedAliases = await _repository.ListUsedAliasesAsync();
+            var currentlyUsedAliases = await repository.ListUsedAliasesAsync();
 
-            var generatedAlias = _randomStringGenerator.GenerateRandomString(_defaultValues.AliasLength);
+            var generatedAlias = randomStringGenerator.GenerateRandomString(defaultValues.AliasLength);
 
             while (currentlyUsedAliases.Any(x => x == generatedAlias))
             {
-                _logger.LogWarning("Generated alias collided with existing value {alias}", generatedAlias);
-                generatedAlias = _randomStringGenerator.GenerateRandomString(_defaultValues.AliasLength);
+                logger.LogWarning("Generated alias collided with existing value {alias}", generatedAlias);
+                generatedAlias = randomStringGenerator.GenerateRandomString(defaultValues.AliasLength);
             }
 
             return generatedAlias;
@@ -66,16 +56,16 @@ namespace SimpleLinkShrinkLibrary.Core.Application.Services
 
         public async Task Delete(int id)
         {
-            var shortlink = await _repository.GetByIdAsync(id);
-            await _repository.DeleteAsync(shortlink);
+            var shortlink = await repository.GetByIdAsync(id);
+            await repository.DeleteAsync(shortlink);
         }
 
         public async Task DeleteExpiredShortlinks()
         {
-            var linksToDelete = await _repository.ListAllAsync(x => x.ExpirationDate != null && x.ExpirationDate < DateTime.Now);
+            var linksToDelete = await repository.ListAllAsync(x => x.ExpirationDate != null && x.ExpirationDate < DateTime.Now);
 
             if (linksToDelete.Any())
-                await _repository.DeleteRangeAsync(linksToDelete);
+                await repository.DeleteRangeAsync(linksToDelete);
         }
     }
 }

@@ -5,23 +5,16 @@ using SimpleLinkShrinkLibrary.Core.Application.Services;
 
 namespace SimpleLinkShrinkLibrary.Infrastructure.Persistence.BackgroundServices
 {
-    public class CleanupExpiredShortlinksService : BackgroundService
+    public class CleanupExpiredShortlinksService(
+        IServiceScopeFactory serviceScopeFactory,
+        ILogger<CleanupExpiredShortlinksService> logger) : BackgroundService
     {
-        private readonly IServiceScopeFactory _serviceScopeFactory;
-        private readonly ILogger<CleanupExpiredShortlinksService> _logger;
-
-        public CleanupExpiredShortlinksService(IServiceScopeFactory serviceScopeFactory, ILogger<CleanupExpiredShortlinksService> logger)
-        {
-            _serviceScopeFactory = serviceScopeFactory;
-            _logger = logger;
-        }
-
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             var timer = new PeriodicTimer(TimeSpan.FromSeconds(10));
             var firstRun = true;
 
-            while (await timer.WaitForNextTickAsync())
+            while (await timer.WaitForNextTickAsync(stoppingToken))
             {
                 if (firstRun)
                 {
@@ -38,7 +31,7 @@ namespace SimpleLinkShrinkLibrary.Infrastructure.Persistence.BackgroundServices
                 }
                 catch (Exception exception)
                 {
-                    _logger.LogError(exception, "Error while deleting expired shortlinks.");
+                    logger.LogError(exception, "Error while deleting expired shortlinks.");
                 }
             }
         }
@@ -46,7 +39,7 @@ namespace SimpleLinkShrinkLibrary.Infrastructure.Persistence.BackgroundServices
         private async Task DeleteExpiredShortlinks()
         {
             // todo: handle exceptions
-            using var scope = _serviceScopeFactory.CreateScope();
+            using var scope = serviceScopeFactory.CreateScope();
             var service = scope.ServiceProvider.GetRequiredService<ShortlinkService>();
             await service.DeleteExpiredShortlinks();
         }

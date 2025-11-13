@@ -2,21 +2,13 @@
 using Microsoft.AspNetCore.Mvc;
 using SimpleLinkShrinkLibrary.Core.Application.Services;
 using SimpleLinkShrinkLibrary.Core.Domain.Exceptions;
-using SimpleLinkShrinkLibrary.Web.SharedRazorClassLibrary.Models;
 using SimpleLinkShrinkLibrary.Web.SharedRazorClassLibrary.Extensions;
 using SimpleLinkShrinkLibrary.Web.SharedRazorClassLibrary.Models;
 
 namespace SimpleLinkShrinkLibrary.Web.SharedRazorClassLibrary.Controllers
 {
-    public class ManageShortlinksController : Controller
+    public class ManageShortlinksController(IShortlinkService service) : Controller
     {
-        private readonly IShortlinkService _service;
-
-        public ManageShortlinksController(IShortlinkService service)
-        {
-            _service = service;
-        }
-
         public ActionResult Index()
         {
             return View();
@@ -28,7 +20,7 @@ namespace SimpleLinkShrinkLibrary.Web.SharedRazorClassLibrary.Controllers
             if (!ModelState.IsValid)
                 return View(nameof(Index), model);
 
-            var result = await _service.Create(model.TargetUrl!);
+            var result = await service.Create(model.TargetUrl!);
 
             return RedirectToAction(nameof(State), new { alias = result.Alias });
         }
@@ -38,7 +30,7 @@ namespace SimpleLinkShrinkLibrary.Web.SharedRazorClassLibrary.Controllers
         {
             try
             {
-                var result = await _service.GetByAlias(alias);
+                var result = await service.GetByAlias(alias);
 
                 var model = new ShortlinkDetailViewModel
                 {
@@ -62,7 +54,7 @@ namespace SimpleLinkShrinkLibrary.Web.SharedRazorClassLibrary.Controllers
         {
             try
             {
-                await _service.Delete(id);
+                await service.Delete(id);
 
                 return View();
             }

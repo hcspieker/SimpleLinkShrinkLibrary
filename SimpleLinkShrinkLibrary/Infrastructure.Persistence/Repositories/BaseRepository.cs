@@ -6,14 +6,9 @@ using System.Linq.Expressions;
 
 namespace SimpleLinkShrinkLibrary.Infrastructure.Persistence.Repositories
 {
-    public class BaseRepository<T> : IRepository<T> where T : EntityBase
+    public class BaseRepository<T>(ShortlinkDbContext dbContext) : IRepository<T> where T : EntityBase
     {
-        protected readonly ShortlinkDbContext _dbContext;
-
-        public BaseRepository(ShortlinkDbContext dbContext)
-        {
-            _dbContext = dbContext;
-        }
+        protected readonly ShortlinkDbContext _dbContext = dbContext;
 
         public async Task<T> GetByIdAsync(int id)
         {

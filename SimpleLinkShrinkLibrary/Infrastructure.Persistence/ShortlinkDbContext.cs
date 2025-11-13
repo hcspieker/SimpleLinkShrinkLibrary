@@ -3,13 +3,9 @@ using SimpleLinkShrinkLibrary.Core.Domain.Entities;
 
 namespace SimpleLinkShrinkLibrary.Infrastructure.Persistence
 {
-    public class ShortlinkDbContext : DbContext
+    public class ShortlinkDbContext(DbContextOptions options) : DbContext(options)
     {
         public DbSet<Shortlink> Shortlinks { get; set; }
-
-        public ShortlinkDbContext(DbContextOptions options) : base(options)
-        {
-        }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

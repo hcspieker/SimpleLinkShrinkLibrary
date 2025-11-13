@@ -1,6 +1,4 @@
-﻿using System.Runtime.Serialization;
-
-namespace SimpleLinkShrinkLibrary.Infrastructure.Persistence.Exceptions
+﻿namespace SimpleLinkShrinkLibrary.Infrastructure.Persistence.Exceptions
 {
 
     [Serializable]
@@ -9,6 +7,5 @@ namespace SimpleLinkShrinkLibrary.Infrastructure.Persistence.Exceptions
         public ConnectionStringNotFoundException() { }
         public ConnectionStringNotFoundException(string message) : base(message) { }
         public ConnectionStringNotFoundException(string message, Exception inner) : base(message, inner) { }
-        protected ConnectionStringNotFoundException(SerializationInfo info, StreamingContext context) : base(info, context) { }
     }
 }
