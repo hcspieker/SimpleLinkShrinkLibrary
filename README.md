@@ -1,30 +1,33 @@
 # SimpleLinkShrinkLibrary
-A simple short link library using ASP.NET Core with SQLite or SQL Server for persistence.
+
+## Overview
+
+This library provides shared Razor UI and services for short links plus separate persistence packages. You call `EnableShortlinks(...)` to register the UI and application services, and then register persistence separately with `EnableSqlServerPersistence(...)` (SQL Server) or `EnableSqlitePersistence(...)` (SQLite).
 
 ## Installation
 
 ### 1. NuGet
 
-Install the main NuGet Package `SpiekerCodes.SimpleLinkShrinkLibrary.RCL` and the persistence package of your choice:
-- SQL Server: `SpiekerCodes.SimpleLinkShrinkLibrary.SqlServer`
-- SQLite: `SpiekerCodes.SimpleLinkShrinkLibrary.Sqlite`
+Install the main NuGet Package and the persistence package of your choice:
+- Main Package: `SpiekerCodes.SimpleLinkShrinkLibrary.RCL`
+- Database provider:
+  - SQL Server: `SpiekerCodes.SimpleLinkShrinkLibrary.SqlServer`
+  - SQLite: `SpiekerCodes.SimpleLinkShrinkLibrary.Sqlite`
 
 ### 2. libman libraries
 
-Install Bootstrap 5 and jQuery using [libman](https://learn.microsoft.com/en-us/aspnet/core/client-side/libman):
-```json
-{
+Install Bootstrap 5 and Toastify using [libman](https://learn.microsoft.com/en-us/aspnet/core/client-side/libman):
+```json{
   "version": "3.0",
   "defaultProvider": "cdnjs",
   "libraries": [
     {
-      "library": "bootstrap@5.3.3",
+      "library": "bootstrap@5.3.8",
       "destination": "wwwroot/lib/bootstrap/"
     },
     {
-      "provider": "cdnjs",
-      "library": "jquery@3.7.1",
-      "destination": "wwwroot/lib/jquery/"
+      "library": "toastify-js@1.12.0",
+      "destination": "wwwroot/lib/toastify-js/"
     }
   ]
 }
@@ -32,9 +35,9 @@ Install Bootstrap 5 and jQuery using [libman](https://learn.microsoft.com/en-us/
 
 ## Setup 
 
-### 1. Register Services
+### 1. Register Services (Program.cs)
 
-In your `Program.cs`, register the library and configure the persistence provider:
+Add the shared UI/services, then register persistence with the chosen provider.
 
 ```csharp
 
@@ -42,9 +45,11 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 
 // Register the Shortlink library right after AddControllersWithViews
+// Using SQLite:
 builder.Services.EnableShortlinks(builder.Configuration)
     .EnableSqlitePersistence(builder.Configuration);
-// OR
+
+// OR SQL Server
 builder.Services.EnableShortlinks(builder.Configuration)
     .EnableSqlServerPersistence(builder.Configuration);
 ```
@@ -69,9 +74,9 @@ Ensure your `appsettings.json` includes the appropriate connection string:
     }
     ```
 
-### 3. Configure the Application
+### 3. Configure Shortlink Settings
 
-Specify the length in characters of the generated shortlink alias and a TimeSpan when the shortlink will expire in your `appsettings.json`:
+Configure alias length and expiration in `appsettings.json`:
 
 ```json
 {
@@ -81,29 +86,18 @@ Specify the length in characters of the generated shortlink alias and a TimeSpan
   }
 }
 ```
-### 4. Add bootstrap and jQuery to your `_Layout.cshtml`
 
-Link the Bootstrap css file:
+### 4. Static assets and layout
+
+Add Bootstrap and Toastify CSS to your `_Layout.cshtml`:
 
 ```cshtml
 [...]
     <link rel="stylesheet" href="~/lib/bootstrap/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/lib/toastify-js/toastify.min.css" />
 </head>
 [...]
 ```
-
-Add script libraries and render scripts section:
-
-```cshtml
-    [...]
-    <script src="~/lib/jquery/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/js/bootstrap.bundle.min.js"></script>
-    @await RenderSectionAsync("Scripts", required: false)
-</body>
-</html>
-```
-
-### 5. Include the partial view in your `_Layout.cshtml`
 
 Reference the partial view `_ShortlinkMenu` in your navigation bar:
 
@@ -118,4 +112,15 @@ Reference the partial view `_ShortlinkMenu` in your navigation bar:
     <partial name="_ShortlinkMenu" />
 </ul>
 [...]
+```
+
+Add Bootstrap and Toastify scripts at the end of `_Layout.cshtml`:
+
+```cshtml
+    [...]
+    <script src="~/lib/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="~/lib/toastify-js/toastify.min.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
 ```
