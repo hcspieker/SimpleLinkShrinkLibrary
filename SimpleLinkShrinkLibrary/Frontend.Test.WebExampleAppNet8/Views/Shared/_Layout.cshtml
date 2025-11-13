@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>@ViewBag.Title</title>
     <link rel="stylesheet" href="~/lib/bootstrap/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/lib/toastify-js/toastify.min.css" />
 </head>
 <body>
     <header>
@@ -30,6 +31,7 @@
         @RenderBody()
     </div>
     <script src="~/lib/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="~/lib/toastify-js/toastify.min.js"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
