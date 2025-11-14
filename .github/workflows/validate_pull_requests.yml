@@ -3,6 +3,10 @@ name: Validate pull requests
 on:
   pull_request:
     branches: [ "main" ]
+    # Only run this workflow if it or the code has changed
+    paths:
+      - ".github/workflows/validate_pull_requests.yml"
+      - "SimpleLinkShrinkLibrary/**"
   workflow_dispatch:
 
 env:
