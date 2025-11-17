@@ -14,14 +14,8 @@ env:
   ENABLE_TESTS: 'false'
 
 jobs:
-  build:    
-    runs-on: ubuntu-latest
-
-    steps:
-    - uses: actions/checkout@v4
-
-    - name: Build dotnet projects
-      uses: hcspieker/shared-build-components/.github/actions/dotnet-build@v1.0.0
-      with:
-        build-filter: ${{ env.PROJECT_FILE }}
-        enable-tests: ${{ env.ENABLE_TESTS }}
+  call-dotnet_web_build:
+    uses: hcspieker/shared-build-components/.github/workflows/dotnet_web_build.yml@v1.2.0-alpha.1
+    with:
+      build-filter: 'SimpleLinkShrinkLibrary/SimpleLinkShrinkLibrary.sln'
+      enable-tests: 'false'
