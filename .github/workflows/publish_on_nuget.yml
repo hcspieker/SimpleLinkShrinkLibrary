@@ -4,10 +4,12 @@ on:
   push:
     tags:
       - 'v*.*.*'
-  
+
 jobs:
   call-dotnet_nuget_build_publish:
     uses: hcspieker/shared-build-components/.github/workflows/dotnet_nuget_build_publish.yml@v1.2.0-alpha.1
+    permissions:
+      id-token: write
     with:
       dotnet-version: |
         10.0.x
