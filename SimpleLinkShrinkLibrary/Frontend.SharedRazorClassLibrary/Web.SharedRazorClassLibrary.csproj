@@ -8,7 +8,7 @@
 		<AssemblyName>SimpleLinkShrinkLibrary.$(MSBuildProjectName)</AssemblyName>
 		<RootNamespace>SimpleLinkShrinkLibrary.$(MSBuildProjectName.Replace(" ", "_"))</RootNamespace>
 		<PackageId>SpiekerCodes.SimpleLinkShrinkLibrary.RCL</PackageId>
-		<Version>0.2.0</Version>
+		<AssemblyVersion>1.0.0.0</AssemblyVersion>
 		<Authors>Harald Spieker</Authors>
 		<RepositoryUrl>https://github.com/hcspieker/SimpleLinkShrinkLibrary.git</RepositoryUrl>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
