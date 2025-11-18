@@ -15,7 +15,7 @@ namespace SimpleLinkShrinkLibrary.Web.SharedRazorClassLibrary.Controllers
                 var result = await service.GetByAlias(alias);
                 return Redirect(result.TargetUrl);
             }
-            catch (EntryNotFoundException)
+            catch (RetrieveShortlinkException)
             {
                 return RedirectToRoute(new
                 {
