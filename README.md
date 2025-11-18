@@ -17,7 +17,8 @@ Install the main NuGet Package and the persistence package of your choice:
 ### 2. libman libraries
 
 Install Bootstrap 5 and Toastify using [libman](https://learn.microsoft.com/en-us/aspnet/core/client-side/libman):
-```json{
+```json
+{
   "version": "3.0",
   "defaultProvider": "cdnjs",
   "libraries": [
@@ -33,26 +34,33 @@ Install Bootstrap 5 and Toastify using [libman](https://learn.microsoft.com/en-u
 }
 ```
 
+Note: You need to enable ["Restore on Build"](https://learn.microsoft.com/en-us/aspnet/core/client-side/libman/libman-vs?view=aspnetcore-9.0#restore-files-during-build) in Visual Studio for libman to restore the libraries automatically.
+
 ## Setup 
 
 ### 1. Register Services (Program.cs)
 
-Add the shared UI/services, then register persistence with the chosen provider.
+Steps in this file:
+- Make sure, that you have `AddControllersWithViews()` called.
+- Add the shared Ui/services right after that and choose your persistence provider.
 
+Using SQLite:
 ```csharp
-
-var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 
-// Register the Shortlink library right after AddControllersWithViews
-// Using SQLite:
 builder.Services.EnableShortlinks(builder.Configuration)
     .EnableSqlitePersistence(builder.Configuration);
+```
 
-// OR SQL Server
+Using SQL Server:
+```csharp
+builder.Services.AddControllersWithViews();
+
 builder.Services.EnableShortlinks(builder.Configuration)
     .EnableSqlServerPersistence(builder.Configuration);
 ```
+
+Note: If youre using Razor Pages, call "AddControllersWithViews()" additionally to "AddRazorPages()". MVC is necessary for this library to work.
 
 ### 2. Specify Connection Strings
 
