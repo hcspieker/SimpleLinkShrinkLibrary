@@ -1,0 +1,21 @@
+name: Validate pull requests
+
+on:
+  pull_request:
+    branches: [ "main" ]
+    # Only run this workflow if it or the code has changed
+    paths:
+      - ".github/workflows/validate_pull_requests.yml"
+      - "SimpleLinkShrinkLibrary/**"
+  workflow_dispatch:
+
+env:
+  PROJECT_FILE: 'SimpleLinkShrinkLibrary/SimpleLinkShrinkLibrary.sln'
+  ENABLE_TESTS: 'false'
+
+jobs:
+  call-dotnet_web_build:
+    uses: hcspieker/shared-build-components/.github/workflows/dotnet_web_build.yml@v1.2.0-alpha.1
+    with:
+      build-filter: 'SimpleLinkShrinkLibrary/SimpleLinkShrinkLibrary.sln'
+      enable-tests: 'false'
