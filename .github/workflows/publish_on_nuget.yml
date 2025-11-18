@@ -59,7 +59,7 @@ jobs:
   publish_nuget:
     needs: build
     runs-on: ubuntu-latest
-    environment: production
+    environment: NuGetOrg
     permissions:
       id-token: write
 
