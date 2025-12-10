@@ -60,7 +60,18 @@ builder.Services.EnableShortlinks(builder.Configuration)
     .EnableSqlServerPersistence(builder.Configuration);
 ```
 
-Note: If youre using Razor Pages, call "AddControllersWithViews()" additionally to "AddRazorPages()". MVC is necessary for this library to work.
+Note: If youre using Razor Pages, call "AddControllersWithViews()" additionally to "AddRazorPages()". MVC is necessary for this library to work. You also need to map the default controller route in `app.MapDefaultControllerRoute()`.
+
+```csharp
+[...]
+builder.Services.AddRazorPages();
+builder.Services.AddControllersWithViews();
+[...]
+app.MapStaticAssets();
+app.MapRazorPages().WithStaticAssets();
+app.MapDefaultControllerRoute().WithStaticAssets();
+[...]
+```
 
 ### 2. Specify Connection Strings
 
