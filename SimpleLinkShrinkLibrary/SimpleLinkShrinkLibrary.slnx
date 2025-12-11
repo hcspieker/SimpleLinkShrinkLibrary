@@ -1,0 +1,14 @@
+<Solution>
+  <Project Path="Core.Application.UnitTests/Core.Application.UnitTests.csproj" />
+  <Project Path="Core.Application/Core.Application.csproj" />
+  <Project Path="Core.Domain.UnitTests/Core.Domain.UnitTests.csproj" />
+  <Project Path="Core.Domain/Core.Domain.csproj" />
+  <Project Path="Frontend.SharedRazorClassLibrary/Web.SharedRazorClassLibrary.csproj" />
+  <Project Path="Frontend.Test.WebExampleAppNet8/Tests.Frontend.SqlServerWebApp.csproj" />
+  <Project Path="Frontend.Test.WebExampleAppNet9/Tests.Frontend.SqliteWebApp.csproj" />
+  <Project Path="Infrastructure.Persistence.Sqlite/Infrastructure.Persistence.Sqlite.csproj" />
+  <Project Path="Infrastructure.Persistence.SqlServer/Infrastructure.Persistence.SqlServer.csproj" />
+  <Project Path="Infrastructure.Persistence.UnitTests/Infrastructure.Persistence.UnitTests.csproj" />
+  <Project Path="Infrastructure.Persistence/Infrastructure.Persistence.csproj" />
+  <Project Path="Web.SharedRazorClassLibrary.UnitTests/Web.SharedRazorClassLibrary.UnitTests.csproj" />
+</Solution>
