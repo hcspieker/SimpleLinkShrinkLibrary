@@ -2,7 +2,7 @@
 @model ShortlinkDetailViewModel
 
 @{
-    ViewBag.Title = "Created a new short link";
+    ViewBag.Title = "Manage a short link";
 }
 
 <div class="row">
@@ -51,7 +51,7 @@
                     </div>
 
                     <form asp-action="Delete" method="post" onsubmit="return confirm('Are you sure that you want to delete this shortlink?')">
-                        <input type="hidden" asp-for="Id" />
+                        <input type="hidden" asp-for="ShortlinkId" />
 
                         <div class="float-start mb-3">
                             <button class="btn btn-danger btn-sm" type="submit">Delete</button>

@@ -19,8 +19,8 @@ namespace SimpleLinkShrinkLibrary.Web.SharedRazorClassLibrary.Controllers
             {
                 return RedirectToRoute(new
                 {
-                    controller = "ManageShortlinks",
-                    action = "PageNotFound"
+                    controller = nameof(ManageShortlinksController).Replace("Controller",""),
+                    action = nameof(ManageShortlinksController.PageNotFound)
                 });
             }
         }

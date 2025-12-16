@@ -2,7 +2,7 @@
 {
     public class ShortlinkDetailViewModel
     {
-        public int Id { get; set; }
+        public int ShortlinkId { get; set; }
         public string TargetUrl { get; set; }
         public string ShortlinkUrl { get; set; }
         public string StatusUrl { get;  set; }

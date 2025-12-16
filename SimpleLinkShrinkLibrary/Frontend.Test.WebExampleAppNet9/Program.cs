@@ -26,6 +26,4 @@ app.UseRouting();
 app.MapStaticAssets();
 app.MapDefaultControllerRoute().WithStaticAssets();
 
-app.MapDefaultControllerRoute();
-
 app.Run();
