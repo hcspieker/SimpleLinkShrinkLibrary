@@ -6,7 +6,7 @@ on:
       - 'v*.*.*'
       
 env:
-  BUILD_FILTER: 'SimpleLinkShrinkLibrary/SimpleLinkShrinkLibrary.sln'
+  BUILD_FILTER: 'SimpleLinkShrinkLibrary/SimpleLinkShrinkLibrary.slnx'
   TEST_FILTER: '**/*[Tt]ests/*.csproj'
   BUILD_CONFIG: 'Release'
   PACKAGES_DIR: 'NuGetPackages'
