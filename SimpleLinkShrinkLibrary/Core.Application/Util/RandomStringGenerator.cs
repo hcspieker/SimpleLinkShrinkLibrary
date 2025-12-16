@@ -22,6 +22,9 @@
 
         public string GenerateRandomString(int length)
         {
+            if (length <= 0)
+                throw new ArgumentOutOfRangeException(nameof(length), "Length must be greater than zero.");
+
             var result = new char[length];
 
             for (int i = 0; i < length; i++)
