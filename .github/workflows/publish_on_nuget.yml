@@ -7,6 +7,7 @@ on:
       
 env:
   BUILD_FILTER: 'SimpleLinkShrinkLibrary/SimpleLinkShrinkLibrary.sln'
+  TEST_FILTER: '**/*[Tt]ests/*.csproj'
   BUILD_CONFIG: 'Release'
   PACKAGES_DIR: 'NuGetPackages'
   ARTIFACT_NAME: 'CreatedNuGetPackages'
@@ -45,6 +46,10 @@ jobs:
       shell: bash
       run: dotnet build ${{ env.BUILD_FILTER }} --configuration ${{ env.BUILD_CONFIG }} --no-restore /p:Version=${{ env.VERSION }} /p:FileVersion=${{ env.VERSION }} /p:InformationalVersion=${{ env.VERSION }}+sha.${GITHUB_SHA:0:7}
       
+    - name: Test
+      shell: bash
+      run: dotnet test ${{ env.TEST_FILTER }} --configuration ${{ env.BUILD_CONFIG }} --no-build --verbosity normal
+
     - name: NuGet Pack
       shell: bash
       run: dotnet pack ${{ env.BUILD_FILTER }} --configuration ${{ env.BUILD_CONFIG }} --no-restore -o ${{ env.PACKAGES_DIR }} /p:PackageVersion=${{ env.VERSION }} /p:Version=${{ env.VERSION }} /p:FileVersion=${{ env.VERSION }} /p:InformationalVersion=${{ env.VERSION }}+sha.${GITHUB_SHA:0:7}
