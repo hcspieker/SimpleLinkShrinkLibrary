@@ -48,7 +48,10 @@ jobs:
       
     - name: Test
       shell: bash
-      run: dotnet test ${{ env.TEST_FILTER }} --configuration ${{ env.BUILD_CONFIG }} --no-build --verbosity normal
+      run: |
+        find . -type f -path '${{ env.TEST_FILTER }}' -printf '%P\n' | while ifs= read -r project; do
+          dotnet test "$project" --configuration ${{ env.build-configuration }} --no-build --verbosity normal
+        done
 
     - name: NuGet Pack
       shell: bash
