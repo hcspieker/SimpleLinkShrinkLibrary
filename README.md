@@ -2,6 +2,8 @@
 
 ## Overview
 
+[![Publish new package version on NuGet](https://github.com/hcspieker/SimpleLinkShrinkLibrary/actions/workflows/publish_on_nuget.yml/badge.svg)](https://github.com/hcspieker/SimpleLinkShrinkLibrary/actions/workflows/publish_on_nuget.yml)
+
 This library provides shared Razor UI and services for short links plus separate persistence packages. You call `EnableShortlinks(...)` to register the UI and application services, and then register persistence separately with `EnableSqlServerPersistence(...)` (SQL Server) or `EnableSqlitePersistence(...)` (SQLite).
 
 ## Installation
