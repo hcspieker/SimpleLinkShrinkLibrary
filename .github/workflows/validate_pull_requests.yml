@@ -14,4 +14,3 @@ jobs:
     uses: hcspieker/shared-build-components/.github/workflows/dotnet_web_build.yml@v2.1.0
     with:
       build-filter: 'SimpleLinkShrinkLibrary/SimpleLinkShrinkLibrary.slnx'
-      enable-tests: 'true'
