@@ -13,23 +13,23 @@ namespace SimpleLinkShrinkLibrary.Web.SharedRazorClassLibrary.UnitTests.Controll
     public class ManageShortlinksControllerTests
     {
         private readonly Mock<IShortlinkService> _serviceMock;
-        private readonly HttpContext httpContext;
-        private readonly ManageShortlinksController controller;
+        private readonly HttpContext _httpContext;
+        private readonly ManageShortlinksController _controller;
 
         public ManageShortlinksControllerTests()
         {
             _serviceMock = new Mock<IShortlinkService>();
 
-            httpContext = new DefaultHttpContext();
-            httpContext.Request.Scheme = "https";
-            httpContext.Request.Host = new HostString("localhost");
-            httpContext.Request.Path = "/ManageShortlinks";
+            _httpContext = new DefaultHttpContext();
+            _httpContext.Request.Scheme = "https";
+            _httpContext.Request.Host = new HostString("localhost");
+            _httpContext.Request.Path = "/ManageShortlinks";
 
-            controller = new ManageShortlinksController(_serviceMock.Object)
+            _controller = new ManageShortlinksController(_serviceMock.Object)
             {
                 ControllerContext = new ControllerContext
                 {
-                    HttpContext = httpContext
+                    HttpContext = _httpContext
                 }
             };
         }
@@ -39,7 +39,7 @@ namespace SimpleLinkShrinkLibrary.Web.SharedRazorClassLibrary.UnitTests.Controll
         public async Task Index_Default_ReturnsIndex()
         {
             // Arrange & Act
-            var result = controller.Index();
+            var result = _controller.Index();
 
             // Assert
             var viewResult = Assert.IsType<ViewResult>(result);
@@ -51,12 +51,12 @@ namespace SimpleLinkShrinkLibrary.Web.SharedRazorClassLibrary.UnitTests.Controll
         public async Task CreateUrl_InvalidModelState_ReturnsIndex()
         {
             // Arrange
-            controller.ModelState.AddModelError("TargetUrl", "Required");
+            _controller.ModelState.AddModelError("TargetUrl", "Required");
 
             var model = new ShortlinkCreateViewModel();
 
             // Act
-            var result = await controller.CreateUrl(model);
+            var result = await _controller.CreateUrl(model);
 
             // Assert
             var viewResult = Assert.IsType<ViewResult>(result);
@@ -84,7 +84,7 @@ namespace SimpleLinkShrinkLibrary.Web.SharedRazorClassLibrary.UnitTests.Controll
                 .ReturnsAsync(createdShortlink);
 
             // Act
-            var result = await controller.CreateUrl(model);
+            var result = await _controller.CreateUrl(model);
 
             // Assert
             _serviceMock.Verify(x => x.Create(It.Is<string>(y => y == targetUrl)), Times.Once);
@@ -110,15 +110,15 @@ namespace SimpleLinkShrinkLibrary.Web.SharedRazorClassLibrary.UnitTests.Controll
                 .ThrowsAsync(new CreateShortlinkException());
 
             // Act
-            var result = await controller.CreateUrl(model);
+            var result = await _controller.CreateUrl(model);
 
             // Assert
             var viewResult = Assert.IsType<ViewResult>(result);
             Assert.Equal("Index", viewResult.ViewName);
             Assert.Equal(model, viewResult.Model);
-            Assert.False(controller.ModelState.IsValid);
+            Assert.False(_controller.ModelState.IsValid);
 
-            var errors = controller.ModelState[""]?.Errors;
+            var errors = _controller.ModelState[""]?.Errors;
             Assert.NotNull(errors);
             Assert.Contains("There was a problem creating the shortlink. Please try again.", errors!.Select(e => e.ErrorMessage));
         }
@@ -142,7 +142,7 @@ namespace SimpleLinkShrinkLibrary.Web.SharedRazorClassLibrary.UnitTests.Controll
                 .ReturnsAsync(createdShortlink);
 
             // Act
-            var result = await controller.CreateUrl(model);
+            var result = await _controller.CreateUrl(model);
 
             // Assert
             var redirectResult = Assert.IsType<RedirectToActionResult>(result);
@@ -168,7 +168,7 @@ namespace SimpleLinkShrinkLibrary.Web.SharedRazorClassLibrary.UnitTests.Controll
                 .ReturnsAsync(existingShortlink);
 
             // Act
-            var result = await controller.State(alias);
+            var result = await _controller.State(alias);
 
             // Assert
             _serviceMock.Verify(x => x.GetByAlias(It.Is<string>(y => y == alias)), Times.Once);
@@ -192,7 +192,7 @@ namespace SimpleLinkShrinkLibrary.Web.SharedRazorClassLibrary.UnitTests.Controll
                 .ReturnsAsync(existingShortlink);
 
             // Act
-            var result = await controller.State(alias);
+            var result = await _controller.State(alias);
 
             // Assert
             var viewResult = Assert.IsType<ViewResult>(result);
@@ -222,7 +222,7 @@ namespace SimpleLinkShrinkLibrary.Web.SharedRazorClassLibrary.UnitTests.Controll
                 .ReturnsAsync(existingShortlink);
 
             // Act
-            var result = await controller.State(alias);
+            var result = await _controller.State(alias);
 
             // Assert
             var viewResult = Assert.IsType<ViewResult>(result);
@@ -230,8 +230,8 @@ namespace SimpleLinkShrinkLibrary.Web.SharedRazorClassLibrary.UnitTests.Controll
 
             var model = Assert.IsType<ShortlinkDetailViewModel>(viewResult.Model);
 
-            var scheme = httpContext.Request.Scheme;
-            var host = httpContext.Request.Host;
+            var scheme = _httpContext.Request.Scheme;
+            var host = _httpContext.Request.Host;
 
             var expectedUrl = $"{scheme}://{host}/s/{existingShortlink.Alias}";
 
@@ -243,7 +243,7 @@ namespace SimpleLinkShrinkLibrary.Web.SharedRazorClassLibrary.UnitTests.Controll
         public async Task State_ExistingEntry_ReturnsCorrectStatusUrl()
         {
             var alias = "short123";
-            httpContext.Request.Path = $"/ManageShortlinks/State/{alias}";
+            _httpContext.Request.Path = $"/ManageShortlinks/State/{alias}";
 
             var existingShortlink = new Shortlink
             {
@@ -257,7 +257,7 @@ namespace SimpleLinkShrinkLibrary.Web.SharedRazorClassLibrary.UnitTests.Controll
                 .ReturnsAsync(existingShortlink);
 
             // Act
-            var result = await controller.State(alias);
+            var result = await _controller.State(alias);
 
             // Assert
             var viewResult = Assert.IsType<ViewResult>(result);
@@ -265,8 +265,8 @@ namespace SimpleLinkShrinkLibrary.Web.SharedRazorClassLibrary.UnitTests.Controll
 
             var model = Assert.IsType<ShortlinkDetailViewModel>(viewResult.Model);
 
-            var scheme = httpContext.Request.Scheme;
-            var host = httpContext.Request.Host;
+            var scheme = _httpContext.Request.Scheme;
+            var host = _httpContext.Request.Host;
             var controllerName = nameof(ManageShortlinksController).Replace("Controller", "");
             var actionName = nameof(ManageShortlinksController.State);
 
@@ -285,12 +285,12 @@ namespace SimpleLinkShrinkLibrary.Web.SharedRazorClassLibrary.UnitTests.Controll
                 .ThrowsAsync(new RetrieveShortlinkException());
 
             // Act
-            var result = await controller.State(alias);
+            var result = await _controller.State(alias);
 
             // Assert
             var viewResult = Assert.IsType<ViewResult>(result);
             Assert.Equal("NotFound", viewResult.ViewName);
-            Assert.Equal(404, controller.Response.StatusCode);
+            Assert.Equal(404, _controller.Response.StatusCode);
         }
 
         [Fact]
@@ -304,7 +304,7 @@ namespace SimpleLinkShrinkLibrary.Web.SharedRazorClassLibrary.UnitTests.Controll
                 .Returns(Task.CompletedTask);
 
             // Act
-            var result = await controller.Delete(shortlinkId);
+            var result = await _controller.Delete(shortlinkId);
 
             // Assert
             var viewResult = Assert.IsType<ViewResult>(result);
@@ -322,7 +322,7 @@ namespace SimpleLinkShrinkLibrary.Web.SharedRazorClassLibrary.UnitTests.Controll
                 .ThrowsAsync(new EntryNotFoundException("Shortlink not found"));
 
             // Act
-            var result = await controller.Delete(shortlinkId);
+            var result = await _controller.Delete(shortlinkId);
 
             // Assert
             var viewResult = Assert.IsType<ViewResult>(result);
@@ -340,12 +340,12 @@ namespace SimpleLinkShrinkLibrary.Web.SharedRazorClassLibrary.UnitTests.Controll
                 .ThrowsAsync(new DummyException("Unexpected error"));
 
             // Act
-            var result = await controller.Delete(shortlinkId);
+            var result = await _controller.Delete(shortlinkId);
 
             // Assert
             var viewResult = Assert.IsType<ViewResult>(result);
             Assert.Equal("Error", viewResult.ViewName);
-            Assert.Equal(500, controller.Response.StatusCode);
+            Assert.Equal(500, _controller.Response.StatusCode);
         }
 
         [Fact]
@@ -353,12 +353,12 @@ namespace SimpleLinkShrinkLibrary.Web.SharedRazorClassLibrary.UnitTests.Controll
         public async Task PageNotFound_Default_ReturnsNotFound()
         {
             // Arrange & Act
-            var result = controller.PageNotFound();
+            var result = _controller.PageNotFound();
 
             // Assert
             var viewResult = Assert.IsType<ViewResult>(result);
             Assert.Equal("NotFound", viewResult.ViewName);
-            Assert.Equal(404, controller.Response.StatusCode);
+            Assert.Equal(404, _controller.Response.StatusCode);
         }
     }
 }
