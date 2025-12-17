@@ -9,13 +9,8 @@ on:
       - "SimpleLinkShrinkLibrary/**"
   workflow_dispatch:
 
-env:
-  PROJECT_FILE: 'SimpleLinkShrinkLibrary/SimpleLinkShrinkLibrary.sln'
-  ENABLE_TESTS: 'false'
-
 jobs:
   call-dotnet_web_build:
-    uses: hcspieker/shared-build-components/.github/workflows/dotnet_web_build.yml@v1.2.0-alpha.1
+    uses: hcspieker/shared-build-components/.github/workflows/dotnet_web_build.yml@v2.1.0
     with:
-      build-filter: 'SimpleLinkShrinkLibrary/SimpleLinkShrinkLibrary.sln'
-      enable-tests: 'false'
+      build-filter: 'SimpleLinkShrinkLibrary/SimpleLinkShrinkLibrary.slnx'
