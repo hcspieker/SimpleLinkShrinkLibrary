@@ -1,0 +1,142 @@
+name: slsl
+
+services:
+  traefik:
+    image: traefik:v3
+    container_name: slsl-traefik
+    command:
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.websecure.address=:443"
+      - "--log.level=ERROR"
+      - "--accesslog=false"
+      - "--api.dashboard=true"
+      - "--api.insecure=true"
+    ports:
+      - "80:80"
+      - "8080:8080"
+      - "443:443"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+    restart: unless-stopped
+    networks:
+      - proxy-network
+
+
+  db_sql:
+    container_name: slsl-db-sql
+    image: mcr.microsoft.com/mssql/server:2025-latest
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=${SA_PASSWORD:-Password123}
+      - MSSQL_PID=Express
+    ports:
+      - "5050:1433"
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: '2.00'
+          memory: 3G
+    networks:
+      - sql-db-network
+
+
+  webapp_sql:
+    container_name: slsl-web-sql
+    build:
+      context: .
+      dockerfile: Dockerfile.sqlserver
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_HTTP_PORTS=80
+      - "ConnectionStrings__ShortlinkDbConnectionString=Data Source=db_sql;Initial Catalog=Shortlinks;User ID=sa;Password=${SA_PASSWORD:-Password123};MultipleActiveResultSets=true;Encrypt=False;TrustServerCertificate=True"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=proxy-network"
+      
+      # === MIDDLEWARE DEFINITIONS ===
+      # Forward HTTPS scheme to ASP.NET Core
+      - "traefik.http.middlewares.sls_web_sqlserver_headers.headers.customrequestheaders.X-Forwarded-Proto=https"
+      
+      # HSTS security headers for HTTPS responses
+      - "traefik.http.middlewares.sls_web_sqlserver_hsts.headers.stsSeconds=60"
+      - "traefik.http.middlewares.sls_web_sqlserver_hsts.headers.stsIncludeSubdomains=true"
+      - "traefik.http.middlewares.sls_web_sqlserver_hsts.headers.stsPreload=true"
+      
+      # HTTP to HTTPS redirect middleware
+      - "traefik.http.middlewares.sls_web_sqlserver_redirect-to-https.redirectscheme.scheme=https"
+      - "traefik.http.middlewares.sls_web_sqlserver_redirect-to-https.redirectscheme.permanent=true"
+      
+      # === HTTPS ROUTER (sql.slsl.localhost) ===
+      - "traefik.http.routers.sls_web_sqlserver_secure.rule=Host(`sqlserver.localhost`)"
+      - "traefik.http.routers.sls_web_sqlserver_secure.entrypoints=websecure"
+      - "traefik.http.routers.sls_web_sqlserver_secure.tls=true"
+      - "traefik.http.routers.sls_web_sqlserver_secure.middlewares=sls_web_sqlserver_headers,sls_web_sqlserver_hsts"
+      
+      # === HTTP ROUTER (redirect to HTTPS) ===
+      - "traefik.http.routers.sls_web_sqlserver_http.rule=Host(`sqlserver.localhost`)"
+      - "traefik.http.routers.sls_web_sqlserver_http.entrypoints=web"
+      - "traefik.http.routers.sls_web_sqlserver_http.middlewares=sls_web_sqlserver_redirect-to-https"
+      
+      # === LOAD BALANCER SERVICE ===
+      - "traefik.http.services.sls_web_sqlserver.loadbalancer.server.port=80"
+    restart: unless-stopped
+    depends_on:
+      - db_sql
+      - traefik
+    networks:
+      - proxy-network
+      - sql-db-network
+
+
+  webapp_sqlite:
+    container_name: slsl-web-sqlite
+    build:
+      context: .
+      dockerfile: Dockerfile.sqlite
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_HTTP_PORTS=80
+    labels:
+      - "traefik.enable=true"
+      
+      # === MIDDLEWARE DEFINITIONS ===
+      # Forward HTTPS scheme to ASP.NET Core
+      - "traefik.http.middlewares.sls_web_sqlite_headers.headers.customrequestheaders.X-Forwarded-Proto=https"
+      
+      # HSTS security headers for HTTPS responses
+      - "traefik.http.middlewares.sls_web_sqlite_hsts.headers.stsSeconds=60"
+      - "traefik.http.middlewares.sls_web_sqlite_hsts.headers.stsIncludeSubdomains=true"
+      - "traefik.http.middlewares.sls_web_sqlite_hsts.headers.stsPreload=true"
+      
+      # HTTP to HTTPS redirect middleware
+      - "traefik.http.middlewares.sls_web_sqlite_redirect-to-https.redirectscheme.scheme=https"
+      - "traefik.http.middlewares.sls_web_sqlite_redirect-to-https.redirectscheme.permanent=true"
+      
+      # === HTTPS ROUTER (sqlite.slsl.localhost) ===
+      - "traefik.http.routers.sls_web_sqlite_secure.rule=Host(`sqlite.localhost`)"
+      - "traefik.http.routers.sls_web_sqlite_secure.entrypoints=websecure"
+      - "traefik.http.routers.sls_web_sqlite_secure.tls=true"
+      - "traefik.http.routers.sls_web_sqlite_secure.middlewares=sls_web_sqlite_headers,sls_web_sqlite_hsts"
+      
+      # === HTTP ROUTER (redirect to HTTPS) ===
+      - "traefik.http.routers.sls_web_sqlite_http.rule=Host(`sqlite.localhost`)"
+      - "traefik.http.routers.sls_web_sqlite_http.entrypoints=web"
+      - "traefik.http.routers.sls_web_sqlite_http.middlewares=sls_web_sqlite_redirect-to-https"
+      
+      # === LOAD BALANCER SERVICE ===
+      - "traefik.http.services.sls_web_sqlite.loadbalancer.server.port=80"
+    restart: unless-stopped
+    depends_on:
+      - traefik
+    networks:
+      - proxy-network
+
+
+networks:
+  proxy-network:
+    driver: bridge
+  sql-db-network:
+    driver: bridge

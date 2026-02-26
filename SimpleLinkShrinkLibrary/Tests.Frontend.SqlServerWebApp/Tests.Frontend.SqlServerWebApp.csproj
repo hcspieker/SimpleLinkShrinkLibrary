@@ -17,7 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Frontend.SharedRazorClassLibrary\Web.SharedRazorClassLibrary.csproj" />
+    <ProjectReference Include="..\Web.SharedRazorClassLibrary\Web.SharedRazorClassLibrary.csproj" />
     <ProjectReference Include="..\Infrastructure.Persistence.SqlServer\Infrastructure.Persistence.SqlServer.csproj" />
   </ItemGroup>
 
