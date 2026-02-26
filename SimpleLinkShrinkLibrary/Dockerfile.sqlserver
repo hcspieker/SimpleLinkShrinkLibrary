@@ -1,0 +1,42 @@
+FROM		mcr.microsoft.com/dotnet/sdk:8.0 AS restore
+
+WORKDIR		/src
+
+COPY		SimpleLinkShrinkLibrary.slnx .
+COPY		Core.Domain/*.csproj Core.Domain/
+COPY		Core.Application/*.csproj Core.Application/
+COPY		Infrastructure.Persistence/*.csproj Infrastructure.Persistence/
+COPY		Infrastructure.Persistence.Sqlite/*.csproj Infrastructure.Persistence.Sqlite/
+COPY		Infrastructure.Persistence.SqlServer/*.csproj Infrastructure.Persistence.SqlServer/
+COPY		Web.SharedRazorClassLibrary/*.csproj Web.SharedRazorClassLibrary/
+COPY		Tests.Frontend.SqliteWebApp/*.csproj Tests.Frontend.SqliteWebApp/
+COPY		Tests.Frontend.SqlServerWebApp/*.csproj Tests.Frontend.SqlServerWebApp/
+
+COPY		Core.Application.UnitTests/*.csproj Core.Application.UnitTests/
+COPY		Core.Domain.UnitTests/*.csproj Core.Domain.UnitTests/
+COPY		Infrastructure.Persistence.Sqlite.UnitTests/*.csproj Infrastructure.Persistence.Sqlite.UnitTests/
+COPY		Infrastructure.Persistence.SqlServer.UnitTests/*.csproj Infrastructure.Persistence.SqlServer.UnitTests/
+COPY		Infrastructure.Persistence.UnitTests/*.csproj Infrastructure.Persistence.UnitTests/
+COPY		Web.SharedRazorClassLibrary.UnitTests/*.csproj Web.SharedRazorClassLibrary.UnitTests/
+
+RUN			dotnet restore Tests.Frontend.SqlServerWebApp/Tests.Frontend.SqlServerWebApp.csproj -p:TargetFramework=net8.0
+
+
+FROM		restore AS build
+COPY		. .
+RUN			dotnet build Tests.Frontend.SqlServerWebApp/Tests.Frontend.SqlServerWebApp.csproj \
+			-c Release --no-restore --framework net8.0  /p:GeneratePackageOnBuild=false
+
+
+FROM		build AS publish
+RUN			dotnet publish Tests.Frontend.SqlServerWebApp/Tests.Frontend.SqlServerWebApp.csproj \
+			-c Release --no-build -o /app/publish /p:UseAppHost=false --framework net8.0
+
+
+FROM		mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
+WORKDIR		/app
+
+COPY		--from=publish /app/publish ./
+RUN
+
+ENTRYPOINT	["dotnet", "SimpleLinkShrinkLibrary.Tests.Frontend.SqlServerWebApp.dll"]

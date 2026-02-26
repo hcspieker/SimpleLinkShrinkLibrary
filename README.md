@@ -62,7 +62,7 @@ builder.Services.EnableShortlinks(builder.Configuration)
     .EnableSqlServerPersistence(builder.Configuration);
 ```
 
-Note: If youre using Razor Pages, call "AddControllersWithViews()" additionally to "AddRazorPages()". MVC is necessary for this library to work. You also need to map the default controller route in `app.MapDefaultControllerRoute()`.
+**Note:** If youre using Razor Pages, call "AddControllersWithViews()" additionally to "AddRazorPages()". MVC is necessary for this library to work. You also need to map the default controller route in `app.MapDefaultControllerRoute()`.
 
 ```csharp
 [...]
@@ -144,4 +144,24 @@ Add Bootstrap and Toastify scripts at the end of `_Layout.cshtml`:
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
+```
+
+### 5. Support reverse proxies (optional)
+
+If your application runs behind a reverse proxy (e.g., Nginx, Apache, Traefik), configure forwarded headers to ensure the library generates correct public-facing URLs for short links. Without this configuration, the library may use the internal request URL instead of the public URL.
+
+1. Add `enableReverseProxySupport: true` to your `EnableShortlinks` call in `Program.cs` to configure forwarded headers.
+1. Call `app.UseForwardedHeaders();` immediately after `var app = builder.Build();` in `Program.cs` to enable header forwarding.
+
+If you are using Traefik as reverse proxy via Docker Compose ([example](SimpleLinkShrinkLibrary/docker-compose.test.yml)), make sure to set the `X-Forwarded-Proto` header in your Traefik configuration:
+```yaml
+services:
+  myapp:
+    image: myapp:latest
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.myapp.rule=Host(`myapp.example.com`)"
+      - "traefik.http.routers.myapp.entrypoints=web"
+      - "traefik.http.middlewares.myapp-headers.headers.customrequestheaders.X-Forwarded-Proto=https"
+      - "traefik.http.routers.myapp.middlewares=myapp-headers"
 ```

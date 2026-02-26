@@ -1,4 +1,10 @@
 <Solution>
+  <Folder Name="/Solution Items/">
+    <File Path=".dockerignore" />
+    <File Path="docker-compose.test.yml" />
+    <File Path="Dockerfile.sqlite" />
+    <File Path="Dockerfile.sqlserver" />
+  </Folder>
   <Project Path="Core.Application.UnitTests/Core.Application.UnitTests.csproj" />
   <Project Path="Core.Application/Core.Application.csproj" />
   <Project Path="Core.Domain.UnitTests/Core.Domain.UnitTests.csproj" />
