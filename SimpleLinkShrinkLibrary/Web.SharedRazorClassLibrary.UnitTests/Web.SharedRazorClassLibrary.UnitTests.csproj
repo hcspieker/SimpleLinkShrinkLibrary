@@ -21,7 +21,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\Frontend.SharedRazorClassLibrary\Web.SharedRazorClassLibrary.csproj" />
+		<ProjectReference Include="..\Web.SharedRazorClassLibrary\Web.SharedRazorClassLibrary.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
